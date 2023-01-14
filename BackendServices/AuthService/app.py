@@ -31,7 +31,6 @@ def token_required(f):
         try:
             # decoding the payload to fetch the stored details
             data = jwt.decode(token, app.config['SECRET_KEY'])
-            print(data)
         except:
             return jsonify({
                 'message' : 'Token is invalid !!'
@@ -83,7 +82,6 @@ def login():
         return make_response("Username or password is empty") , 401
     
     user_in_db = get_user_by_name(username)
-    print("user",user_in_db)
     
     if h_password != user_in_db["password"] :
         return make_response("Wrong password", 401)
@@ -96,6 +94,7 @@ def login():
     return make_response(jsonify({'token' : access_token.decode('UTF-8')}), 201)
     
 @app.get('/users')
+@token_required
 def get_all_users():
     db_connection = app.config["DATABASE_CON"]
     db_connection.row_factory = sqlite3.Row
@@ -126,7 +125,6 @@ def create_user():
     password = request_body["password"]
     h_password = hmac.new(app.config["SECRET_KEY"].encode(), password.encode(), 'sha256').hexdigest()
     db_connection = app.config["DATABASE_CON"]
-    print( get_user_by_name(username) != False ,"aha")
     if get_user_by_name(username) != False :
         return make_response("User already registered"), 401
     cur = db_connection.cursor()
@@ -149,6 +147,7 @@ def create_user():
     }
 
 @app.delete('/users/<string:user_id>')
+@token_required
 def delete_user(user_id):
     db_connection = app.config["DATABASE_CON"]
     cur = db_connection.cursor()
@@ -163,4 +162,4 @@ def delete_user(user_id):
         }
         
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
