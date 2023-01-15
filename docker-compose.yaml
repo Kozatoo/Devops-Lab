@@ -36,3 +36,11 @@ services:
       - "5000:5000"
     depends_on:
       - kafka
+
+  front:
+    build:
+      context: Front/
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+
