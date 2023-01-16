@@ -19,13 +19,14 @@ const io = require('socket.io')(server, {
     origin: '*',
   }
 });
-
+// io.on("")
 io.on('connection', async socket => {
     const userName = "Aziz"
-    //todo set user topic to usrname from jwt payload
-    const user_topic = "AzizBouaouina",connections_topic= "connections",messages_topic="messages" ;
-    const consumer = kafka.consumer({groupId : "aziz"});
+    //todo set user_topic to username from jwt payload
+    const user_topic = socket.id ,connections_topic= "connections",messages_topic="messages" ;
+    const consumer = kafka.consumer({groupId : user_topic, allowAutoTopicCreation: true});
     const connectionWatcher = kafka.producer();
+
     await connectionWatcher.connect();
     await connectionWatcher.send({
         topic: connections_topic,
@@ -39,19 +40,12 @@ io.on('connection', async socket => {
 
     await consumer.run({
         eachMessage: async ({ user_topic, partition, message, heartbeat, pause }) => {
-            console.log("run ??",message)
-            console.log(message.value.toString())
-            console.log(`emitting ${socket.emit('update', message.value.toString() + "client only ")}`)
-            io.emit('update', message.value.toString()+ "broadcast")
+            socket.emit("update", message.value.toString())
         },
     })
 
-    socket.on("test", async (data)=>{
-        console.log("test");
-        socket.emit("test", data)
-    })
     socket.on('send_message',async (data) =>{
-        console.log("sending message", data)
+        console.log("producer socket id " + socket.id)
         const producer = kafka.producer();
 
         await producer.connect();
@@ -61,14 +55,14 @@ io.on('connection', async socket => {
                 {value: data}
                     ]
         })
-        console.log("message sent to user topic")
+        console.log("message sent to "+ user_topic)
         await producer.send({
             topic: messages_topic,
             messages:[
                 {value: data}
             ]
         })
-        console.log("message sent to messages topic")
+        console.log("message sent to "+ messages_topic)
     });
 
     socket.on('disconnect', async () => { 
