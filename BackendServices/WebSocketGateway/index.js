@@ -1,6 +1,9 @@
 const { json } = require('express');
 const express = require('express');
-const { Kafka } = require('kafkajs')
+const { Kafka } = require('kafkajs');
+const jwt = require('jsonwebtoken');
+const AUTH_SECRET_KEY = process.env.SECRET_KEY
+
 const port = 3000;
 const app = express();
 require('dotenv').config();
@@ -20,8 +23,21 @@ const io = require('socket.io')(server, {
     origin: '*',
   }
 });
-// io.on("")
-io.on('connection', async socket => {
+io.of("/")
+.use((socket, next)=>{
+    if (socket.handshake.query && socket.handshake.query.token){
+        jwt.verify(socket.handshake.query.token, AUTH_SECRET_KEY, function(err, decoded) {
+          if (err) return next(new Error('Authentication error'));
+        
+          socket.decoded = decoded;
+          next();
+        });
+      }
+      else {
+        next(new Error('Authentication error'));
+      }    
+})
+.on('connection', async socket => {
     const userName = "Aziz"
     //todo set user_topic to username from jwt payload
     const user_topic = "Aziz",connections_topic= "connections",messages_topic="messages" ;
