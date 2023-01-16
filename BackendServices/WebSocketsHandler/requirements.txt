@@ -1,5 +1,0 @@
-Flask
-flask_cors
-kafka-python
-Flask-SocketIO
-eventlet

@@ -18,12 +18,12 @@ services:
     image: wurstmeister/zookeeper
     restart: always
   
-  web-sockets-gateway:
+  web-socket-gateway:
     build: 
-      context: BackendServices/WebSocketsHandler
+      context: BackendServices/WebSocketGateway
       dockerfile: Dockerfile
     ports: 
-      - "5001:5001"
+      - "3000:3000"
     depends_on:
       - kafka
     restart: always

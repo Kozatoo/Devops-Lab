@@ -95,7 +95,7 @@ def login():
     
 @app.get('/users')
 @token_required
-def get_all_users():
+def get_all_users(data):
     db_connection = app.config["DATABASE_CON"]
     db_connection.row_factory = sqlite3.Row
     cur = db_connection.cursor()
