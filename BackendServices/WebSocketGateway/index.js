@@ -24,8 +24,8 @@ const io = require('socket.io')(server, {
 io.on('connection', async socket => {
     const userName = "Aziz"
     //todo set user_topic to username from jwt payload
-    const user_topic = socket.id ,connections_topic= "connections",messages_topic="messages" ;
-    const consumer = kafka.consumer({groupId : user_topic, allowAutoTopicCreation: true});
+    const user_topic = "Aziz",connections_topic= "connections",messages_topic="messages" ;
+    const consumer = kafka.consumer({groupId : socket.id, allowAutoTopicCreation: true});
     const connectionWatcher = kafka.producer();
 
     await connectionWatcher.connect();
@@ -65,17 +65,11 @@ io.on('connection', async socket => {
         message = {
             from: userName,
             to: data.dest,
-            value: data.value
+            value: data.value,
+            sessionId: socket.id
         }
         await producer.connect();
-        await producer.send({
-            topic: user_topic,
-            messages:[
-                {value: JSON.stringify(message)}
-                    ]
-        })
 
-        console.log("message sent to "+ user_topic)
         await producer.send({
             topic: messages_topic,
             messages:[
