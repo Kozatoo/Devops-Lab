@@ -14,7 +14,7 @@ const AuthProvider = ({ children }) => {
       axios
         .get(`${import.meta.env.VITE_BACKEND_URL}/me`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            "x-access-token": JSON.parse(token),
           },
         })
         .then((result) => {
@@ -30,7 +30,7 @@ const AuthProvider = ({ children }) => {
     axios
       .post(`${import.meta.env.VITE_BACKEND_URL}/login`, { ...data })
       .then((res) => {
-        setUser(res.data.user);
+        setUser(res.data.username);
         localStorage.setItem("token", JSON.stringify(res.data.token));
       })
       .catch((error) => {
@@ -40,9 +40,10 @@ const AuthProvider = ({ children }) => {
 
   const Register = (data) => {
     axios
-      .post(`${import.meta.env.VITE_BACKEND_URL}/register`, { ...data })
+      .post(`${import.meta.env.VITE_BACKEND_URL}/users`, { ...data })
       .then((res) => {
-        setUser(res.data.user);
+        console.log({ res });
+        setUser(res.data.username);
         localStorage.setItem("token", JSON.stringify(res.data.token));
       })
       .catch((error) => {
