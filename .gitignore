@@ -4,4 +4,4 @@ node_modules
 __pycache__
 *.db
 
-.env
+*.env

@@ -27,6 +27,8 @@ services:
     depends_on:
       - kafka
     restart: always
+    env_file:
+      - ./back.env
     
   auth-service:
     build: 
@@ -36,6 +38,8 @@ services:
       - "5000:5000"
     depends_on:
       - kafka
+    env_file:
+      - ./back.env
 
   front:
     build:
@@ -43,6 +47,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
-    environment:
-      - VITE_BACKEND_URL=http://localhost:5000
+    env_file:
+      - ./front.env
 

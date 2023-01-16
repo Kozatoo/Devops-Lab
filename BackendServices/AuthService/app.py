@@ -3,9 +3,6 @@ import jwt , os, datetime
 from functools import wraps
 import sqlite3
 import hmac
-from dotenv import load_dotenv
-
-load_dotenv()
 
 app = Flask(__name__)
 app.config["SECRET_KEY"]= os.environ.get("SECRET_KEY") or "secret"

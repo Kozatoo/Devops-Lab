@@ -1,16 +1,17 @@
 const express = require('express');
-// const kafka = require('kafka-node');
 const { Kafka } = require('kafkajs')
 const port = 3000;
 const app = express();
+require('dotenv').config();
 
 const server = app.listen(port, () => {
   console.log(`Listening on port ${server.address().port}`);
 });
+console.log(process.env)
 const kafka = new Kafka({
     clientId: "WebSocketsGateway",
     //Todo import brokers list and insert it here 
-    brokers: ['kafka:9092']
+    brokers: [process.env.BROKER_URL]
 })
 
 const io = require('socket.io')(server, {
@@ -19,8 +20,8 @@ const io = require('socket.io')(server, {
   }
 });
 
-io.on('connection', async client => {
-    const UserName = "Aziz"
+io.on('connection', async socket => {
+    const userName = "Aziz"
     //todo set user topic to usrname from jwt payload
     const user_topic = "AzizBouaouina",connections_topic= "connections",messages_topic="messages" ;
     const consumer = kafka.consumer({groupId : "aziz"});
@@ -28,8 +29,8 @@ io.on('connection', async client => {
     await connectionWatcher.connect();
     await connectionWatcher.send({
         topic: connections_topic,
-        message:[ 
-            {value: UserName + "has connected"}
+        messages:[ 
+            {value: `${userName} has connected`}
         ]
     })
 
@@ -40,11 +41,16 @@ io.on('connection', async client => {
         eachMessage: async ({ user_topic, partition, message, heartbeat, pause }) => {
             console.log("run ??",message)
             console.log(message.value.toString())
-            client.emit('update', message.value.toString())
+            console.log(`emitting ${socket.emit('update', message.value.toString() + "client only ")}`)
+            io.emit('update', message.value.toString()+ "broadcast")
         },
     })
 
-    client.on('send_message',async (data) =>{
+    socket.on("test", async (data)=>{
+        console.log("test");
+        socket.emit("test", data)
+    })
+    socket.on('send_message',async (data) =>{
         console.log("sending message", data)
         const producer = kafka.producer();
 
@@ -65,11 +71,12 @@ io.on('connection', async client => {
         console.log("message sent to messages topic")
     });
 
-    client.on('disconnect', async () => { 
+    socket.on('disconnect', async () => { 
+        console.log("disconnected")
         await connectionWatcher.send({
             topic: connections_topic,
-            message:[ 
-                {value: UserName + "has disconnected"}
+            messages:[ 
+                {value:`${userName} has disconnected`}
             ]
         })
     });
