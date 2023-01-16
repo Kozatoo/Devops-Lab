@@ -38,9 +38,9 @@ io.of("/")
       }    
 })
 .on('connection', async socket => {
-    const userName = "Aziz"
+    const userName = socket.decoded.username;
     //todo set user_topic to username from jwt payload
-    const user_topic = "Aziz",connections_topic= "connections",messages_topic="messages" ;
+    const user_topic = userName, connections_topic= "connections", messages_topic="messages" ;
     const consumer = kafka.consumer({groupId : socket.id, allowAutoTopicCreation: true});
     const connectionWatcher = kafka.producer();
 
@@ -73,9 +73,6 @@ io.of("/")
     })
 
     socket.on('send_message',async (data) =>{
-        console.log("producer socket id " + socket.id)
-        console.log(data);
-        console.log(JSON.parse(data))
         data = JSON.parse(data)
         const producer = kafka.producer();
         message = {
@@ -92,7 +89,6 @@ io.of("/")
                 {value: JSON.stringify(message)}
             ]
         })
-        console.log("message sent to "+ messages_topic)
     });
 
     socket.on('disconnect', async () => { 

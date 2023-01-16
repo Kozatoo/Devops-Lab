@@ -13,7 +13,7 @@ const kafka = new Kafka({
     brokers: [process.env.BROKER_URL]
 })
 
-const groupId = "messageHandler";
+const groupId = "test";
 const messageHandlerTopic = "messages";
 
 const consumer = kafka.consumer({groupId : groupId, allowAutoTopicCreation: true});
@@ -42,14 +42,15 @@ async function run(){
                     {value: JSON.stringify(newMessage)}
                         ]
             })
+            console.log(`sent message to ${message.from}`)
             //send message to receiver
             await producer.send({
-                topic: message.dest,
+                topic: message.to,
                 messages:[
                     {value: JSON.stringify(newMessage)}
                         ]
             })
-            console.log(`sent message to ${message.sessionId}`)
+            console.log(`sent message to ${message.dest}`)
         },
     })
 }
