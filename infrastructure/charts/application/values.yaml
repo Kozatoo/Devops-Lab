@@ -1,0 +1,39 @@
+gateway:
+  deployment:
+    replicas: 3
+    jwt: qm{[--èrlsdkhjfmqoujhfgpquighkjqrg5678324*/67824*/95sdqkljhg
+
+  service:
+    port: 3000
+    name: gateway-service
+
+authentication: 
+  deployment:
+    replicas: 3
+    jwt: this_should_be_a_secret
+    # DB_HOST: database
+    # DB_PORT: 5432
+    # DB_NAME: barbershopdb
+    # JWT_SECRET: qm{[--èrlsdkhjfmqoujhfgpquighkjqrg5678324*/67824*/95sdqkljhg
+    # DB_USER: barbershopuser
+    # DB_PASSWD: barbershoppasswd
+
+  service:
+    port: 5000
+    name: auth-service
+
+posts:
+  deployment:
+    replicas: 3
+    DB_HOST: database
+    DB_PORT: 5432
+    DB_NAME: barbershopdb
+    JWT_SECRET: qm{[--èrlsdkhjfmqoujhfgpquighkjqrg5678324*/67824*/95sdqkljhg
+    PRODUCTION: "true"
+    DB_USER: barbershopuser
+    DB_PASSWD: barbershoppasswd
+
+  service:
+    port: 3002
+    name: posts-service
+

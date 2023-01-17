@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-authentication
+  labels:
+    app: auth
+spec:
+  replicas: {{ .Values.authentication.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+      - name: auth-container
+        image: bouaouinaziz/chat-app-auth-service:latest
+        ports:
+        - containerPort: {{ .Values.authentication.service.port }}
+        env:
+          - name: PRODUCTION
+            value: "true"
+          - name: JWT_SECRET
+            value: {{ .Values.authentication.deployment.jwt }}
+          - name: DB_HOST
+            value: {{ .Values.authentication.deployment.DB_HOST}}
+          - name: DB_PORT
+            value: "{{ .Values.authentication.deployment.DB_PORT}}"
+          - name: DB_NAME
+            value: {{ .Values.authentication.deployment.DB_NAME}}
+          - name: DB_USER
+            value: {{ .Values.authentication.deployment.DB_USER}}
+          - name: DB_PASSWD
+            value: {{ .Values.authentication.deployment.DB_PASSWD}}

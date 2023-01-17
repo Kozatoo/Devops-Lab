@@ -4,4 +4,7 @@ node_modules
 __pycache__
 *.db
 
+*.pem
+*.pub
 *.env
+.terraform

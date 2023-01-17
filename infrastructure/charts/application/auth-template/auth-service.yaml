@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.authentication.service.name}}
+spec:
+  selector:
+    app: auth
+  ports:
+  - name: http
+    port: {{.Values.authentication.service.port}}
+    targetPort: {{.Values.authentication.service.port}}
+  type: ClusterIP
