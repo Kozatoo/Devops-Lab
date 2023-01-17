@@ -1,36 +1,45 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import io from "socket.io-client";
+import { useAuth } from "../Context/AuthProvider";
 
-function Chat({ user }) {
+function Chat({ user, socket }) {
+  const { user: userCon } = useAuth();
   const [messages, setMessages] = useState([]);
-  const [socket] = useState(() => io("http://localhost:3000"));
 
   useEffect(() => {
-    socket.on("message", (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
+    if (socket) {
+      socket.on("update", (message) => {
+        setMessages((prevMessages) => [...prevMessages, message]);
+      });
+    }
   }, [socket]);
 
   useEffect(() => {
     async function getMessages() {
-      const response = await axios.get(
-        "https://mocki.io/v1/aade820c-a92c-4dbd-ab9f-226f6803325f"
-      );
+      const response = await axios.get("http://localhost:3001/messages", {
+        params: {
+          firstUser: user.username,
+          secondUser: userCon.username,
+        },
+        headers: {
+          "x-access-token": JSON.parse(localStorage.getItem("token")),
+        },
+      });
       const { data } = response;
       setMessages(data);
     }
     getMessages();
-  }, []);
+  }, [user]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const message = event.target.elements.message.value;
-    socket.emit("message", {
-      sender: user.id,
-      reciever: user.id,
-      payload: message,
+    console.log({ socket });
+    socket.emit("send_message", {
+      dest: user.username,
+      value: message,
       time: new Date().getTime(),
     });
     event.target.elements.message.value = "";
@@ -47,15 +56,15 @@ function Chat({ user }) {
               <li
                 key={message.id}
                 className={`text-gray-800 ${
-                  message.sender === user.user_id
+                  message.sender === user.username
                     ? "bg-blue-200 text-left"
                     : "bg-gray-300 text-right"
                 }`}
               >
                 <div className="font-medium">
-                  {message.sender === user.user_id ? user.username : "You"}:
+                  {message.from === user.username ? user.username : "You"}:
                 </div>
-                {message.payload}
+                {message.value}
               </li>
             ))}
           </ul>

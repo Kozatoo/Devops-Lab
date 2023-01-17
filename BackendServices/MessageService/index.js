@@ -2,9 +2,10 @@ const { json } = require("express");
 const express = require("express");
 const { Kafka } = require("kafkajs");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const port = 3001;
 const app = express();
-
+app.use(cors());
 mongoose.connect(process.env.MESSAGES_DB, { useNewUrlParser: true });
 const messageSchema = new mongoose.Schema({
   from: String,
