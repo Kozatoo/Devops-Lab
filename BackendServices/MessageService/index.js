@@ -1,8 +1,47 @@
 const { json } = require('express');
 const express = require('express');
-const { Kafka } = require('kafkajs')
+const { Kafka } = require('kafkajs');
+const mongoose = require("mongoose")
 const port = 3001;
 const app = express();
+
+mongoose.connect(process.env.MESSAGES_DB, { useNewUrlParser: true });
+const messageSchema = new mongoose.Schema({
+  from: String,
+  to: String,
+  value: String
+});
+const Message = mongoose.model('Message', messageSchema);
+
+app.get('/messages',async (req,res)=>{
+    
+    console.log("Fetching messages from message handler ")
+    Message.find( 
+        {   $or:
+                [
+                    
+                    { $and: [
+                        {from: req.params.firstUser},
+                        { to: req.params.secondUser}
+                    ]
+                    },
+                    { 
+                        $and: [
+                        {to: req.params.firstUser},
+                        {from: req.params.secondUser}
+                    ]
+                    },
+            ]
+        },
+        (error,messages)=>{
+            if(error) {
+                res.status(500).send(error);
+            }
+            console.log("found smgth")
+            res.status(200).send(messages)
+        }
+    )
+})
 
 const server = app.listen(port, () => {
   console.log(`Listening on port ${server.address().port}`);
@@ -32,9 +71,19 @@ async function run(){
                 value: message.value,
                 to: message.to 
             }
+
             //store message in db
-            
-            console.log(newMessage)
+            // Create a new message
+            const messageToSave = new Message({ from: message.from,to: message.to, value: message.value });
+            // Save the message to the database
+            messageToSave.save((error) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('message saved successfully!');
+                }
+            });
+
             //send message to sender 
             await producer.send({
                 topic: message.from,
