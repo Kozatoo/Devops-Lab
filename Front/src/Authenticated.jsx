@@ -1,9 +1,11 @@
 import { Route, Routes } from "react-router-dom";
+import Sidebar from "./components/sideBar";
+import Messenger from "./pages/messenger";
 
 const Authenticated = () => {
   return (
     <Routes>
-      <Route path="*" element={<h1>hiiiiiiii</h1>} />
+      <Route path="*" element={<Messenger />} />
     </Routes>
   );
 };
