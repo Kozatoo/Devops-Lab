@@ -22,15 +22,5 @@ spec:
         env:
           - name: PRODUCTION
             value: "true"
-          - name: JWT_SECRET
+          - name: SECRET_KEY
             value: {{ .Values.authentication.deployment.jwt }}
-          - name: DB_HOST
-            value: {{ .Values.authentication.deployment.DB_HOST}}
-          - name: DB_PORT
-            value: "{{ .Values.authentication.deployment.DB_PORT}}"
-          - name: DB_NAME
-            value: {{ .Values.authentication.deployment.DB_NAME}}
-          - name: DB_USER
-            value: {{ .Values.authentication.deployment.DB_USER}}
-          - name: DB_PASSWD
-            value: {{ .Values.authentication.deployment.DB_PASSWD}}

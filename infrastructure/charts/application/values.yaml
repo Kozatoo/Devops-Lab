@@ -9,15 +9,8 @@ gateway:
 
 authentication: 
   deployment:
-    replicas: 3
+    replicas: 1
     jwt: this_should_be_a_secret
-    # DB_HOST: database
-    # DB_PORT: 5432
-    # DB_NAME: barbershopdb
-    # JWT_SECRET: qm{[--èrlsdkhjfmqoujhfgpquighkjqrg5678324*/67824*/95sdqkljhg
-    # DB_USER: barbershopuser
-    # DB_PASSWD: barbershoppasswd
-
   service:
     port: 5000
     name: auth-service
