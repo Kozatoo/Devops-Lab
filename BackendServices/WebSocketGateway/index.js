@@ -2,6 +2,8 @@ const { json } = require('express');
 const express = require('express');
 const { Kafka } = require('kafkajs');
 const jwt = require('jsonwebtoken');
+const url = require('url');
+const axios = require("axios");
 const AUTH_SECRET_KEY = process.env.SECRET_KEY
 
 const port = 3000;
@@ -16,6 +18,23 @@ const kafka = new Kafka({
     clientId: "WebSocketsGateway",
     //Todo import brokers list and insert it here 
     brokers: [process.env.BROKER_URL]
+})
+
+app.get("/messages",async (req,res)=>{
+    const token = req.headers['x-access-token']
+    console.log("Fetching messages from websocket")
+    jwt.verify(token, AUTH_SECRET_KEY, async (error,decoded)=>{
+        if(error){
+            res.status(401).send("Invalid token!");
+        }
+        const params = {
+            firstUser: decoded.username,
+            secondUser: url.parse(req.url, true).query.user
+        }
+        console.log(params)
+        console.log(process.env.MESSAGE_SERVICE_URL+'messages')
+        res.send(axios.get(process.env.MESSAGE_SERVICE_URL+"messages", {params}))
+    })
 })
 
 const io = require('socket.io')(server, {
