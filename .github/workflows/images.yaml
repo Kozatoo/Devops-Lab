@@ -3,7 +3,16 @@ on:
   push:
     tags:
       - "v*"
-
+env:
+  FRONT_SERVICE_LOCATION: "./Front"
+  FRONT_IMAGE_NAME: "chat-app-front"
+  AUTH_SERVICE_LOCATION: "./BackendServices/AuthService"
+  AUTH_IMAGE_NAME: "chat-app-auth-service"
+  MESSAGE_SERVICE_LOCATION: "./BackendServices/MessageService"
+  MESSAGE_IMAGE_NAME: "chat-app-message-service"
+  GATEWAY_SERVICE_LOCATION: "./BackendServices/WebSocketGateway"
+  GATEWAY_IMAGE_NAME: "chat-app-gateway"
+  
 jobs:
   buildingImages:
     runs-on: ubuntu-latest
@@ -22,27 +31,27 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          context: ./Front
-          file: ./Front/Dockerfile
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppFront:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppFront:${{ steps.get_version.outputs.VERSION }}
+          context: ${{ env.FRONT_SERVICE_LOCATION }}
+          file: ${{ env.FRONT_SERVICE_LOCATION }}/Dockerfile
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{env.FRONT_IMAGE_NAME}}:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/${{env.FRONT_IMAGE_NAME}}:${{ steps.get_version.outputs.VERSION }}
       - name: Build & push Auth service
         uses: docker/build-push-action@v3
         with:
           push: true
-          context: ./BackendServices/AuthService
-          file: ./BackendServices/AuthService/Dockerfile
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppAuth:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppAuth:${{ steps.get_version.outputs.VERSION }}
+          context: ${{ env.AUTH_SERVICE_LOCATION }}
+          file: ${{ env.AUTH_SERVICE_LOCATION }}/Dockerfile
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{env.AUTH_IMAGE_NAME}}:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/${{env.AUTH_IMAGE_NAME}}:${{ steps.get_version.outputs.VERSION }}
       - name: Build & push Message service
         uses: docker/build-push-action@v3
         with:
           push: true
-          context: ./BackendServices/MessageService
-          file: ./BackendServices/MessageService/Dockerfile
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppMessage:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppMessage:${{ steps.get_version.outputs.VERSION }}
+          context: ${{ env.MESSAGE_SERVICE_LOCATION }}
+          file: ${{ env.MESSAGE_SERVICE_LOCATION }}/Dockerfile
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{env.MESSAGE_IMAGE_NAME}}:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/${{env.MESSAGE_IMAGE_NAME}}:${{ steps.get_version.outputs.VERSION }}
       - name: Build & push Gateway service
         uses: docker/build-push-action@v3
         with:
           push: true
-          context: ./BackendServices/ 
-          file: ./BackendServices/GatewayService/Dockerfile
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppGateway:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppGateway:${{ steps.get_version.outputs.VERSION }}
+          context: ${{ env.GATEWAY_SERVICE_LOCATION }}
+          file: ${{ env.GATEWAY_SERVICE_LOCATION }}/Dockerfile
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{env.GATEWAY_IMAGE_NAME}}:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/${{env.GATEWAY_IMAGE_NAME}}:${{ steps.get_version.outputs.VERSION }}
