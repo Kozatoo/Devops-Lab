@@ -2,7 +2,7 @@ name: Building images & pushing to docker hub
 on:
   push:
     tags:
-      - "v*"
+      - "*#release"
 
 jobs:
   buildingImages:
