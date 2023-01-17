@@ -1,0 +1,44 @@
+name: Building images & pushing to docker hub
+  on: [push]
+  jobs:
+    buildingImages:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout 
+          uses: actions/checkout@v3
+        - name: Logging in to Docker Hub
+          uses: docker/login-action@v1
+          with:
+            username: ${{ secrets.DOCKER_HUB_USERNAME }}
+            password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+        - name: Get the version
+          id: get_version
+          run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+        - name: Build & push Front
+          uses: docker/build-push-action@v3
+          with:
+            push: true
+            context: ./Front
+            file: ./Front/Dockerfile
+            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppFront:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppFront:${{ steps.get_version.outputs.VERSION }}
+        - name: Build & push Auth service
+          uses: docker/build-push-action@v3
+          with:
+            push: true
+            context: ./BackendServices/AuthService
+            file: ./BackendServices/AuthService/Dockerfile
+            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppAuth:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppAuth:${{ steps.get_version.outputs.VERSION }}
+        - name: Build & push Message service
+          uses: docker/build-push-action@v3
+          with:
+            push: true
+            context: ./BackendServices/MessageService
+            file: ./BackendServices/MessageService/Dockerfile
+            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppMessage:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppMessage:${{ steps.get_version.outputs.VERSION }}
+        - name: Build & push Gateway service
+          uses: docker/build-push-action@v3
+          with:
+            push: true
+            context: ./BackendServices/ 
+            file: ./BackendServices/GatewayService/Dockerfile
+            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppGateway:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/ChatAppGateway:${{ steps.get_version.outputs.VERSION }}
