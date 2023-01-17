@@ -94,7 +94,7 @@ async function run() {
         topic: message.to,
         messages: [{ value: JSON.stringify(newMessage) }],
       });
-      console.log(`sent message to ${message.dest}`);
+      console.log(`sent message to ${message.to}`);
     },
   });
 }

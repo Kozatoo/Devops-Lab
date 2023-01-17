@@ -44,15 +44,24 @@ const io = require('socket.io')(server, {
 });
 io.of("/")
 .use((socket, next)=>{
-    if (socket.handshake.query && socket.handshake.query.token){
+    console.log("User trying to connect ")
+    console.log(socket)
+    console.log(socket.handshake.query.token)
+    console.log(socket.handshake.query)
+    if (socket?.handshake?.query && socket?.handshake?.query?.token){
         jwt.verify(socket.handshake.query.token, AUTH_SECRET_KEY, function(err, decoded) {
-          if (err) return next(new Error('Authentication error'));
-        
+          if (err)  {
+            console.log("there was an error")
+            return next(new Error('Authentication error'));
+          }
+          console.log("no error")
           socket.decoded = decoded;
           next();
         });
       }
       else {
+        console.log(err)
+        console.logt("no socket info ")
         next(new Error('Authentication error'));
       }    
 })
