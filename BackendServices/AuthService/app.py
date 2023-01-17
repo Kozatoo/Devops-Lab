@@ -15,6 +15,28 @@ app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") or "secret"
 database_filename = os.environ.get('DATABASE_FILENAME', 'users_db.db')
 db_connection = sqlite3.connect(database_filename, check_same_thread=False)
 
+def create_db(database_filename):
+    # connect to SQLite
+    con = sqlite3.connect(database_filename)
+
+    # Create a Connection
+    cur = con.cursor()
+    
+    # Create users table  in db_web database
+    sql = '''CREATE TABLE IF NOT EXISTS "users" (
+			"user_id"	INTEGER PRIMARY KEY AUTOINCREMENT,
+			"username"	TEXT,
+			"password"	TEXT
+		)'''
+    cur.execute(sql)
+
+    # commit changes
+    con.commit()
+
+    # close the connection
+    con.close()
+
+create_db(database_filename)
 app.config.from_mapping(
     DATABASE_CON=db_connection
 )
