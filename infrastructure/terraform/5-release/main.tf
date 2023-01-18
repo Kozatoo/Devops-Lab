@@ -9,7 +9,7 @@ data "terraform_remote_state" "release_state" {
   }
 }
 resource "helm_release" "release" {
-  name             = "release3"
+  name             = "release"
   chart            = "../../charts/Backend"
 
   values = [
