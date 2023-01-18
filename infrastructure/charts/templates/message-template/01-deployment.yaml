@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend.messages.name }}-{{ .Values.version }}
+  labels:
+    app: {{.Values.backend.messages.name}}-{{ .Values.version }}
+    version: {{.Values.version}}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.backend.messages.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.backend.messages.name }}-{{ .Values.version }}
+      version: {{ .Values.version }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.backend.messages.name }}-{{ .Values.version }}
+        version: {{.Values.version}}
+    spec:
+      containers:
+      - name: {{.Values.backend.messages.name}}-container
+        image: {{ .Values.backend.messages.image }}:latest
+        ports:
+        - containerPort: {{ .Values.backend.messages.port }}
+        env:
+          - name: PRODUCTION
+            value: "true"
+          - name: SECRET_KEY
+            valueFrom:
+                secretKeyRef:
+                    name: {{ .Values.backend.messages.name }}-secret
+                    key: jwt
+          - name: messagesS_DB
+            valueFrom:
+                secretKeyRef:
+                    name: {{ .Values.namespace }}-secret
+                    key: db_conn

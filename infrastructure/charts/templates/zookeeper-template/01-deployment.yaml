@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: zookeeper
-  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   selector:

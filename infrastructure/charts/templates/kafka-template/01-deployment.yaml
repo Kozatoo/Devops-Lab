@@ -4,7 +4,6 @@ metadata:
   name: kafka
   labels:
     app: kafka
-  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   selector:
@@ -25,8 +24,6 @@ spec:
           value: "route -n | awk '/UG[ \t]/{print $$2}'"
         - name: KAFKA_ZOOKEEPER_CONNECT
           value: zookeeper:2181
-        strategy:
-          type: RollingUpdate
           rollingUpdate:
             maxSurge: 3
       volumes:
@@ -34,5 +31,3 @@ spec:
           hostPath:
             path: /var/run/docker.sock
       restartPolicy: Always
-      dependsOn:
-        - zookeeper

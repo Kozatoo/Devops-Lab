@@ -5,7 +5,7 @@ metadata:
   labels:
     app: {{ .Values.name }}-back-{{ .Values.version }}
     version: {{.Values.version}}
-  namespace:  {{.Values.namespace}}
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
     app: {{ .Values.name }}-back-{{ .Values.version }}
@@ -13,5 +13,5 @@ spec:
 
   ports:
   - name: http
-    port: {{.Values.gateway.service.port}}
-    targetPort: {{.Values.gateway.service.port}}
+    port: {{.Values.backend.gateway.port}}
+    targetPort: {{.Values.backend.gateway.port}}

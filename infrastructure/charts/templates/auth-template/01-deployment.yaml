@@ -7,7 +7,7 @@ metadata:
     version: {{.Values.version}}
   namespace: {{ .Values.namespace }}
 spec:
-  replicas: {{ .Values.backend.authentication.name }}-{{ .Values.version }}
+  replicas: {{ .Values.backend.authentication.deployment.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.backend.authentication.name }}-{{ .Values.version }}
@@ -19,15 +19,15 @@ spec:
         version: {{.Values.version}}
     spec:
       containers:
-      - name: {{.Values.authentication.name}}-container
-        image: {{ .Values.authentication.image }}:latest
+      - name: {{.Values.backend.authentication.name}}-container
+        image: {{ .Values.backend.authentication.image }}:latest
         ports:
-        - containerPort: {{ .Values.authentication.port }}
+        - containerPort: {{ .Values.backend.authentication.port }}
         env:
           - name: PRODUCTION
             value: "true"
           - name: SECRET_KEY
             valueFrom:
                 secretKeyRef:
-                    name: {{ .Values.authentication.name }}-secret
+                    name: {{ .Values.backend.authentication.name }}-secret
                     key: jwt

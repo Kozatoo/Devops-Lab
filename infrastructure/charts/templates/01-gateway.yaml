@@ -1,22 +1,23 @@
-apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
-metadata:
-  name: chat-gateway
-  namespace: {{ .Values.namespace }}
-spec:
-  selector:
-    istio: ingressgateway
-  servers:
-    - port:
-        number: 80
-        name: http
-        protocol: HTTP
-      hosts:
-        - "*"
+# apiVersion: networking.istio.io/v1alpha3
+# kind: Gateway
+# metadata:
+#   name: chat-gateway
+#   namespace: {{ .Values.namespace }}
+# spec:
+#   selector:
+#     istio: ingressgateway
+#   servers:
+#     - port:
+#         number: 80
+#         name: http
+#         protocol: HTTP
+#       hosts:
+        # - "*"
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: Gateway
 metadata:
   name: chat-gateway
+  namespace: {{ .Values.namespace }}
 spec:
   gatewayClassName: chat-gateway-class
   listeners:
@@ -28,6 +29,7 @@ apiVersion: gateway.networking.k8s.io/v1beta1
 kind: HTTPRoute
 metadata:
   name: chat-route
+  namespace: {{ .Values.namespace }}
 spec:
   parentRefs:
   - name: chat-gateway
