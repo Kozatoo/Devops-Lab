@@ -25,8 +25,6 @@ spec:
           value: "route -n | awk '/UG[ \t]/{print $$2}'"
         - name: KAFKA_ZOOKEEPER_CONNECT
           value: zookeeper:2181
-          rollingUpdate:
-            maxSurge: 3
       volumes:
         - name: kafka-vol
           hostPath:

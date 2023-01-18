@@ -11,7 +11,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ .Values.backend.authentication.name }}-{{ .Values.version }}
+            name: ingress-{{ .Values.version }}
             port:
               number: 5000
       - path: /messages

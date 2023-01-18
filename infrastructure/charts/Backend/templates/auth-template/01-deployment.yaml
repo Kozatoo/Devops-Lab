@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: {{.Values.backend.authentication.name}}-container
-        image: {{ .Values.backend.authentication.image }}:latest
+        image: bouaouinaziz/chat-app-auth-service
         ports:
         - containerPort: {{ .Values.backend.authentication.port }}
         env:

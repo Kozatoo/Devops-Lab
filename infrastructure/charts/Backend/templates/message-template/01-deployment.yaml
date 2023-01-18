@@ -20,18 +20,13 @@ spec:
     spec:
       containers:
       - name: {{.Values.backend.messages.name}}-container
-        image: {{ .Values.backend.messages.image }}:latest
+        image: bouaouinaziz/chat-app-message-service
         ports:
         - containerPort: {{ .Values.backend.messages.port }}
         env:
           - name: PRODUCTION
             value: "true"
-          - name: SECRET_KEY
-            valueFrom:
-                secretKeyRef:
-                    name: {{ .Values.backend.messages.name }}-secret
-                    key: jwt
-          - name: messagesS_DB
+          - name: MESSAGES_DB
             valueFrom:
                 secretKeyRef:
                     name: {{ .Values.namespace }}-secret

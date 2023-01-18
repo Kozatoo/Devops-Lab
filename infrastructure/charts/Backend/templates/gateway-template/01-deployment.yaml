@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: {{.Values.backend.gateway.name}}-container
-        image: {{ .Values.backend.gateway.image }}:latest
+        image: bouaouinaziz/chat-app-gateway
         ports:
         - containerPort: {{ .Values.backend.gateway.port }}
         env:
