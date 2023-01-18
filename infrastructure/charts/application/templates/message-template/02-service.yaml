@@ -13,5 +13,5 @@ spec:
 
   ports:
   - name: http
-    port: {{.Values.authentication.service.port}}
-    targetPort: {{.Values.authentication.service.port}}
+    port: {{.Values.message.service.port}}
+    targetPort: {{.Values.message.service.port}}

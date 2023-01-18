@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: chat
-  namespace: default
+  namespace: {{ .Values.namespace }}
 spec:
   gateways:
     - gl5-gateway

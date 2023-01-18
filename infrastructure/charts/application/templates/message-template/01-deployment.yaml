@@ -1,32 +1,38 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.backend.gateway.name }}-{{ .Values.version }}
+  name: {{ .Values.backend.message.name }}-{{ .Values.version }}
   labels:
-    app: {{.Values.backend.gateway.name}}-{{ .Values.version }}
+    app: {{.Values.backend.message.name}}-{{ .Values.version }}
     version: {{.Values.version}}
+  namespace: {{ .Values.namespace }}
 spec:
-  replicas: {{ .Values.backend.gateway.name }}-{{ .Values.version }}
+  replicas: {{ .Values.backend.message.name }}-{{ .Values.version }}
   selector:
     matchLabels:
-      app: {{ .Values.backend.gateway.name }}-{{ .Values.version }}
+      app: {{ .Values.backend.message.name }}-{{ .Values.version }}
       version: {{ .Values.version }}
   template:
     metadata:
       labels:
-        app: {{ .Values.backend.gateway.name }}-{{ .Values.version }}
+        app: {{ .Values.backend.message.name }}-{{ .Values.version }}
         version: {{.Values.version}}
     spec:
       containers:
-      - name: {{.Values.gateway.name}}-container
-        image: {{ .Values.gateway.image }}:latest
+      - name: {{.Values.message.name}}-container
+        image: {{ .Values.message.image }}:latest
         ports:
-        - containerPort: {{ .Values.gateway.port }}
+        - containerPort: {{ .Values.message.port }}
         env:
           - name: PRODUCTION
             value: "true"
           - name: SECRET_KEY
             valueFrom:
                 secretKeyRef:
-                    name: {{ .Values.namespace }}-secret
+                    name: {{ .Values.message.name }}-secret
                     key: jwt
+          - name: MESSAGES_DB
+            valuesFrom:s
+                secretKeyRef:
+                    name: {{ .Values.namespace }}-secret
+                    key: db_conn

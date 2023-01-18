@@ -5,6 +5,7 @@ metadata:
   labels:
     app: {{.Values.backend.authentication.name}}-{{ .Values.version }}
     version: {{.Values.version}}
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: {{ .Values.backend.authentication.name }}-{{ .Values.version }}
   selector:
@@ -28,5 +29,5 @@ spec:
           - name: SECRET_KEY
             valueFrom:
                 secretKeyRef:
-                    name: {{ .Values.namespace }}-secret
+                    name: {{ .Values.authentication.name }}-secret
                     key: jwt
