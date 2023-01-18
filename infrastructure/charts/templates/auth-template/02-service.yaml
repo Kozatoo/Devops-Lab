@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name:  {{ .Values.backend.authentication.name }}-{{ .Values.version }}
+  name:  {{ .Values.backend.authentication.name }}-service 
   labels:
     app: {{ .Values.name }}-back-{{ .Values.version }}
     version: {{.Values.version}}

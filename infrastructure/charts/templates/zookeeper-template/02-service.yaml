@@ -4,6 +4,7 @@ metadata:
   name: zookeeper
   labels:
     app: zookeeper
+  namespace: {{ .Values.namespace }}
 spec:
   ports:
     - name: zookeeper
