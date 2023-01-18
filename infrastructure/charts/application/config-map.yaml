@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap
+data:
+  DATABASE_FILENAME: users_db.db
+  AUTH_SERVICE_URL: localhost:5000
+  SECRET_KEY: THIS_SHOULD_BE_SECRET
+  BROKER_URL: kafka:9092
+  WEB_SOCKET_GATEWAY: localhost:3000
+  MESSAGES_DB: mongodb+srv://aziz:bouaouina@cluster0.yetvlls.mongodb.net/?retryWrites=true&w=majority
+  MESSAGE_SERVICE_URL: http://localhost:3001/

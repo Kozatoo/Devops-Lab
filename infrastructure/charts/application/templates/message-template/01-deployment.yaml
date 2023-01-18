@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend.gateway.name }}-{{ .Values.version }}
+  labels:
+    app: {{.Values.backend.gateway.name}}-{{ .Values.version }}
+    version: {{.Values.version}}
+spec:
+  replicas: {{ .Values.backend.gateway.name }}-{{ .Values.version }}
+  selector:
+    matchLabels:
+      app: {{ .Values.backend.gateway.name }}-{{ .Values.version }}
+      version: {{ .Values.version }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.backend.gateway.name }}-{{ .Values.version }}
+        version: {{.Values.version}}
+    spec:
+      containers:
+      - name: {{.Values.gateway.name}}-container
+        image: {{ .Values.gateway.image }}:latest
+        ports:
+        - containerPort: {{ .Values.gateway.port }}
+        env:
+          - name: PRODUCTION
+            value: "true"
+          - name: SECRET_KEY
+            valueFrom:
+                secretKeyRef:
+                    name: {{ .Values.namespace }}-secret
+                    key: jwt

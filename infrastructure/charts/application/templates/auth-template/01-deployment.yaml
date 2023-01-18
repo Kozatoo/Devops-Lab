@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend.authentication.name }}-{{ .Values.version }}
+  labels:
+    app: {{.Values.backend.authentication.name}}-{{ .Values.version }}
+    version: {{.Values.version}}
+spec:
+  replicas: {{ .Values.backend.authentication.name }}-{{ .Values.version }}
+  selector:
+    matchLabels:
+      app: {{ .Values.backend.authentication.name }}-{{ .Values.version }}
+      version: {{ .Values.version }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.backend.authentication.name }}-{{ .Values.version }}
+        version: {{.Values.version}}
+    spec:
+      containers:
+      - name: {{.Values.authentication.name}}-container
+        image: {{ .Values.authentication.image }}:latest
+        ports:
+        - containerPort: {{ .Values.authentication.port }}
+        env:
+          - name: PRODUCTION
+            value: "true"
+          - name: SECRET_KEY
+            valueFrom:
+                secretKeyRef:
+                    name: {{ .Values.namespace }}-secret
+                    key: jwt

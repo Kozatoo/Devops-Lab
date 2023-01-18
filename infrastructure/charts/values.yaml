@@ -1,0 +1,25 @@
+name: chat-app
+namespace: webapp
+version: v1
+
+backend:
+  authentication: 
+    deployment:
+      replicas: 1
+    port: 5000
+    name: auth-service
+    image: bouaouinaziz/chat-app-auth-service
+
+  gateway:
+    deployment: 
+      replicas: 3
+    port: 3000
+    name: gateway-service
+    image: bouaouinaziz/chat-app-gateway-service
+
+  messages:
+    deployment:
+      replicas: 3
+    port: 3001
+    name: messages-service
+    image: bouaouinaziz/chat-app-messages-service
